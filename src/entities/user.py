@@ -7,7 +7,7 @@ class User:
         self.fullname = fullname
         self.email = email
         self.password = password
-        self.createdAt = datetime.now()
+        self.createdAt = datetime.datetime.now()
 
     def __str__(self):
         return (
