@@ -1,7 +1,8 @@
 import json
 from flask import Flask, jsonify, request
 
-from src.entities.user import User
+from src.domain.entities.user import User
+
 
 app = Flask(__name__)
 
