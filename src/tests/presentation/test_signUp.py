@@ -70,3 +70,29 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
         self.useCases.addAccount.assert_called_once_with(
             "any_name", "any_email@email.com", "any_password"
         )
+
+    async def test_handle_returns_201_if_use_case_succeeds(self):
+        request = HttpRequest(
+            body={
+                "name": "valid_name",
+                "email": "valid_email@email.com",
+                "password": "valid_password",
+            }
+        )
+        self.useCases.addAccount.return_value = {
+            "id": "valid_id",
+            "name": "valid_name",
+            "email": "valid_email@email.com",
+            "created_at": "valid_created_at",
+        }
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 201)
+        self.assertEqual(
+            response.body,
+            {
+                "id": "valid_id",
+                "name": "valid_name",
+                "email": "valid_email@email.com",
+                "created_at": "valid_created_at",
+            },
+        )
