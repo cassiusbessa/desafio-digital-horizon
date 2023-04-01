@@ -1,4 +1,4 @@
-from domain.usecases.userUseCases import UserUseCases
+from domain.usecases.addAccount import AddAccount
 from presentation.errors.missingParamError import MissingParamError
 from presentation.controllers.protocols.controller import (
     Controller,
@@ -13,8 +13,8 @@ from presentation.controllers.protocols.responses import (
 
 
 class SignUp(Controller):
-    def __init__(self, useCases: UserUseCases):
-        self.useCases = useCases
+    def __init__(self, addAccount: AddAccount):
+        self.addAccount = addAccount
 
     async def handle(self, http_request: HttpRequest) -> HttpResponse:
         try:
@@ -30,7 +30,7 @@ class SignUp(Controller):
             email = http_request.body["email"]
             password = http_request.body["password"]
 
-            user = await self.useCases.addAccount(name, email, password)
+            user = await self.addAccount.add(name, email, password)
             return created(user)
         except Exception as e:
             return serverError(e)
