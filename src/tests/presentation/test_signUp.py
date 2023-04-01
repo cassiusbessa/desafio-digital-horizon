@@ -6,14 +6,17 @@ from presentation.controllers.protocols.controller import HttpRequest
 from presentation.controllers.signUp import SignUp
 
 
-class TestSignUp(unittest.TestCase):
+class TestSignUp(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.useCases = MagicMock(spec=UserUseCases)
         self.sut = SignUp(self.useCases)
 
     async def test_handle_missing_name(self):
         request = HttpRequest(
-            body={"email": "any_email@email.com", "password": "any_password"}
+            body={
+                "email": "any_email@email.com",
+                "password": "any_password",
+            }
         )
 
         response = await self.sut.handle(request)
@@ -31,12 +34,28 @@ class TestSignUp(unittest.TestCase):
 
     async def test_handle_missing_password(self):
         request = HttpRequest(
-            body={"name": "any_name", "email": "any_email@email.com"}
+            body={
+                "name": "any_name",
+                "email": "any_email@email.com",
+            }
         )
 
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 400)
         self.assertEqual(response.body, {"error": "Missing param: password"})
+
+    async def test_handle_returns_500_if_use_case_raises(self):
+        request = HttpRequest(
+            body={
+                "name": "any_name",
+                "email": "any_email@email.com",
+                "password": "any_password",
+            }
+        )
+        self.useCases.addAccount.side_effect = Exception("Error message")
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 500)
+        self.assertEqual(response.body, {"error": "Internal server error"})
 
     async def test_handle_calls_use_case_with_correct_params(self):
         request = HttpRequest(
