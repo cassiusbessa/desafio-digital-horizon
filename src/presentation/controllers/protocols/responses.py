@@ -17,3 +17,10 @@ def serverError(error: Exception) -> HttpResponse:
             "error": "Internal server error",
         },
     )
+
+
+def created(data: dict) -> HttpResponse:
+    return HttpResponse(
+        201,
+        data,
+    )
