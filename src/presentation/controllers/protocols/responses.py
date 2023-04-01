@@ -8,3 +8,12 @@ def badRequest(error: Exception) -> HttpResponse:
             "error": str(error),
         },
     )
+
+
+def serverError(error: Exception) -> HttpResponse:
+    return HttpResponse(
+        500,
+        {
+            "error": "Internal server error",
+        },
+    )
