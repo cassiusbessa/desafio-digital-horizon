@@ -8,7 +8,7 @@ from domain.usecases.addUser import AddUserModel
 from infra.postgres.repository import UserRepository
 
 
-class TestUserRepository(unittest.TestCase):
+class TestUserRepository(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.conn = psycopg2.connect(
             host="localhost",
@@ -32,18 +32,19 @@ class TestUserRepository(unittest.TestCase):
 
     def tearDown(self):
         self.conn.rollback()
-        self.cursor.execute("DROP TABLE users;")
+        self.conn.commit()
+        self.cursor.execute("DROP TABLE IF EXISTS users CASCADE;")
         self.conn.commit()
         self.cursor.close()
         self.conn.close()
 
-    def test_add_user(self):
+    async def test_add_user(self):
         userModel: AddUserModel = {
             "fullname": "valid_name",
             "email": "valid_email",
             "password": "valid_password",
         }
-        result = self.user_repository.add(userModel)
+        result = await self.user_repository.add(userModel)
 
         self.cursor.execute("SELECT * FROM users WHERE id = %s", (result.id,))
         db_user = self.cursor.fetchone()
@@ -53,6 +54,33 @@ class TestUserRepository(unittest.TestCase):
         self.assertTrue(isinstance(db_user["created_at"], datetime))
 
         self.assertTrue(isinstance(result, User))
+        self.assertEqual(result.fullname, userModel["fullname"])
+        self.assertEqual(result.email, userModel["email"])
+        self.assertEqual(result.password, userModel["password"])
+        self.assertTrue(isinstance(result.createdAt, datetime))
+        self.assertTrue(isinstance(result.id, int))
+
+    async def test_load_user(self):
+        userModel: AddUserModel = {
+            "fullname": "valid_name",
+            "email": "valid_email",
+            "password": "valid_password",
+        }
+        self.cursor.execute(
+            "INSERT INTO users (fullname, email, password, created_at) "
+            "VALUES (%s, %s, %s, %s) RETURNING *;",
+            (
+                userModel["fullname"],
+                userModel["email"],
+                userModel["password"],
+                datetime.now(),
+            ),
+        )
+        db_user = self.cursor.fetchone()
+        self.conn.commit()
+
+        result = await self.user_repository.load(db_user["email"])
+
         self.assertEqual(result.fullname, userModel["fullname"])
         self.assertEqual(result.email, userModel["email"])
         self.assertEqual(result.password, userModel["password"])
