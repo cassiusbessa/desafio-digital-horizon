@@ -2,3 +2,4 @@ flask==2.2.3
 flake8==6
 black==23.3
 psycopg2
+asgiref
