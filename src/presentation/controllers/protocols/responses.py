@@ -24,3 +24,12 @@ def created(data: dict) -> HttpResponse:
         201,
         data,
     )
+
+
+def forbidden(error: Exception) -> HttpResponse:
+    return HttpResponse(
+        403,
+        {
+            "error": str(error),
+        },
+    )

@@ -1,4 +1,5 @@
 from domain.usecases.addUser import AddUser
+from presentation.errors.emailInUseError import EmailInUseError
 from presentation.errors.missingParamError import MissingParamError
 from presentation.controllers.protocols.controller import (
     Controller,
@@ -8,6 +9,7 @@ from presentation.controllers.protocols.controller import (
 from presentation.controllers.protocols.responses import (
     badRequest,
     created,
+    forbidden,
     serverError,
 )
 
@@ -27,6 +29,8 @@ class SignUp(Controller):
                 if field not in httpRequest.body:
                     return badRequest(MissingParamError(field))
             user = await self.addUser.add(httpRequest.body)
+            if user is None:
+                return forbidden(EmailInUseError())
             return created(user.toDict())
         except Exception as e:
             print(e)
