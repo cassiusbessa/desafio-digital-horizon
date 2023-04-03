@@ -13,6 +13,8 @@ class DbAddLogin(Authentication):
 
     async def auth(self, loginData: LoginModel) -> LoginResponseModel:
         user = await self.loadUser.load(loginData["email"])
+        if user is None:
+            return None
         token = await self.tokenGenerator.generateToken(user)
         return {
             "token": token,
