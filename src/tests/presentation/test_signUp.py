@@ -54,9 +54,7 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
         )
 
         await self.sut.handle(request)
-        self.addUser.add.assert_called_once_with(
-            "any_name", "any_email@email.com", "any_password"
-        )
+        self.addUser.add.assert_called_once_with(request.body)
 
     async def test_handle_returns_500_if_addUser_raises(self):
         request = HttpRequest(

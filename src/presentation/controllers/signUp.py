@@ -16,7 +16,7 @@ class SignUp(Controller):
     def __init__(self, addUser: AddUser):
         self.addUser = addUser
 
-    async def handle(self, http_request: HttpRequest) -> HttpResponse:
+    async def handle(self, httpRequest: HttpRequest) -> HttpResponse:
         try:
             required_fields = [
                 "fullname",
@@ -24,13 +24,10 @@ class SignUp(Controller):
                 "password",
             ]
             for field in required_fields:
-                if field not in http_request.body:
+                if field not in httpRequest.body:
                     return badRequest(MissingParamError(field))
-            fullname = http_request.body["fullname"]
-            email = http_request.body["email"]
-            password = http_request.body["password"]
-
-            user = await self.addUser.add(fullname, email, password)
+            user = await self.addUser.add(httpRequest.body)
             return created(user)
         except Exception as e:
+            print(e)
             return serverError(e)
