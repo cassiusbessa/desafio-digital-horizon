@@ -19,14 +19,12 @@ async def index():
 
 @app.route("/login", methods=["POST"])
 async def login():
-    print(request)
     if len(request.data) == 0:
         return jsonify({"error": "empty body"})
     record = json.loads(request.data)
     httprequest = HttpRequest(body=record)
     controller = makeLogin()
     result = await controller.handle(httprequest)
-    print("chamou isso aqui?")
     return jsonify(result.body)
 
 
