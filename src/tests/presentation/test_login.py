@@ -30,3 +30,10 @@ class TestLogin(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 400)
         self.assertEqual(response.body, {"error": "Missing param: password"})
+
+    async def test_handle_calls_authentication_with_correct_params(self):
+        request = HttpRequest(
+            body={"email": "any_email", "password": "any_password"}
+        )
+        await self.sut.handle(request)
+        self.authentication.auth.assert_called_once_with(request.body)
