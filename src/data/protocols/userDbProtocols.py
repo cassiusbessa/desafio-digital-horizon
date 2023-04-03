@@ -7,3 +7,9 @@ class AddUserRepository(ABC):
     @abstractmethod
     async def add(self, user: AddUserModel) -> User:
         pass
+
+
+class LoadUserByEmailRepository(ABC):
+    @abstractmethod
+    async def load(self, email: str) -> User:
+        pass
