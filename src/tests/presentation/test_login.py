@@ -37,3 +37,12 @@ class TestLogin(unittest.IsolatedAsyncioTestCase):
         )
         await self.sut.handle(request)
         self.authentication.auth.assert_called_once_with(request.body)
+
+    async def test_handle_returns_500_if_authentication_raises(self):
+        request = HttpRequest(
+            body={"email": "any_email", "password": "any_password"}
+        )
+        self.authentication.auth.side_effect = Exception("Error")
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 500)
+        self.assertEqual(response.body, {"error": "Internal server error"})
