@@ -1,5 +1,7 @@
+from datetime import datetime
 import unittest
 from unittest.mock import MagicMock
+from domain.entities.user import User
 from domain.usecases.addUser import AddUser
 
 from presentation.controllers.protocols.controller import HttpRequest
@@ -52,7 +54,13 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
                 "password": "any_password",
             }
         )
-
+        self.addUser.add.return_value = User(
+            id="any_id",
+            fullname="any_name",
+            email="any_email@email.com",
+            password="any_password",
+            createdAt=datetime.now(),
+        )
         await self.sut.handle(request)
         self.addUser.add.assert_called_once_with(request.body)
 
@@ -77,20 +85,32 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
                 "password": "valid_password",
             }
         )
-        self.addUser.add.return_value = {
-            "id": "valid_id",
-            "fullname": "valid_name",
-            "email": "valid_email@email.com",
-            "created_at": "valid_created_at",
-        }
+        user = User(
+            id="valid_id",
+            fullname="valid_name",
+            email="valid_email@email.com",
+            password="valid_password",
+            createdAt=datetime.now(),
+        )
+        self.addUser.add.return_value = user
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 201)
         self.assertEqual(
             response.body,
-            {
-                "id": "valid_id",
+            user.toDict(),
+        )
+
+    async def test_handle_returns_403_if_email_is_in_use(self):
+        request = HttpRequest(
+            body={
                 "fullname": "valid_name",
-                "email": "valid_email@email.com",
-                "created_at": "valid_created_at",
-            },
+                "email": "in_use_email@email.com",
+                "password": "valid_password",
+            }
+        )
+        self.addUser.add.return_value = None
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 403)
+        self.assertEqual(
+            response.body, {"error": "The received email is already in use"}
         )
