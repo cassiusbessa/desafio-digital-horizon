@@ -52,3 +52,17 @@ class TestDbAddUser(unittest.IsolatedAsyncioTestCase):
         self.loadUserByEmailRepository.load.assert_called_with(
             user_data["email"]
         )
+
+    async def test_should_return_none_loadUserByEmailRepository_returns_none(
+        self,
+    ):
+        user_data = {
+            "id": "any_id",
+            "fullname": "any_name",
+            "email": "any_email",
+            "password": "any_password",
+            "created_at": "any_created_at",
+        }
+        self.loadUserByEmailRepository.load.return_value = None
+        user = await self.sut.add(user_data)
+        self.assertIsNone(user)
