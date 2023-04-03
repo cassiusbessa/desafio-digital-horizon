@@ -9,7 +9,7 @@ class UserRepository(AddUserRepository):
     def __init__(self, conn):
         self.conn = conn
 
-    def add(self, user: AddUserModel) -> User:
+    async def add(self, user: AddUserModel) -> User:
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO users (fullname, email, password, created_at) "
