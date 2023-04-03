@@ -27,7 +27,7 @@ class SignUp(Controller):
                 if field not in httpRequest.body:
                     return badRequest(MissingParamError(field))
             user = await self.addUser.add(httpRequest.body)
-            return created(user)
+            return created(user.toDict())
         except Exception as e:
             print(e)
             return serverError(e)
