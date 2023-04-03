@@ -22,8 +22,8 @@ class Login(Controller):
             for field in required_fields:
                 if field not in httpRequest.body:
                     return badRequest(MissingParamError(field))
-            user = await self.authentication.auth(httpRequest.body)
-            return created(user)
+            payload = await self.authentication.auth(httpRequest.body)
+            return created(payload)
         except Exception as e:
             print(e)
             return serverError(e)
