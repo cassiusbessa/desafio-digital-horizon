@@ -1,13 +1,10 @@
-import datetime
-
-
 class User:
-    def __init__(self, id, fullname, email, password):
+    def __init__(self, id, fullname, email, password, createdAt):
         self.id = id
         self.fullname = fullname
         self.email = email
         self.password = password
-        self.createdAt = datetime.datetime.now()
+        self.createdAt = createdAt
 
     def __str__(self):
         return (

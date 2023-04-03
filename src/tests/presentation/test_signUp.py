@@ -21,11 +21,11 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
 
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 400)
-        self.assertEqual(response.body, {"error": "Missing param: name"})
+        self.assertEqual(response.body, {"error": "Missing param: fullname"})
 
     async def test_handle_missing_email(self):
         request = HttpRequest(
-            body={"name": "any_name", "password": "any_password"}
+            body={"fullname": "any_name", "password": "any_password"}
         )
 
         response = await self.sut.handle(request)
@@ -35,7 +35,7 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
     async def test_handle_missing_password(self):
         request = HttpRequest(
             body={
-                "name": "any_name",
+                "fullname": "any_name",
                 "email": "any_email@email.com",
             }
         )
@@ -47,7 +47,7 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
     async def test_handle_calls_addUser_with_correct_params(self):
         request = HttpRequest(
             body={
-                "name": "any_name",
+                "fullname": "any_name",
                 "email": "any_email@email.com",
                 "password": "any_password",
             }
@@ -61,7 +61,7 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
     async def test_handle_returns_500_if_addUser_raises(self):
         request = HttpRequest(
             body={
-                "name": "any_name",
+                "fullname": "any_name",
                 "email": "any_email@email.com",
                 "password": "any_password",
             }
@@ -74,14 +74,14 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
     async def test_handle_returns_201_if_succeeds(self):
         request = HttpRequest(
             body={
-                "name": "valid_name",
+                "fullname": "valid_name",
                 "email": "valid_email@email.com",
                 "password": "valid_password",
             }
         )
         self.addUser.add.return_value = {
             "id": "valid_id",
-            "name": "valid_name",
+            "fullname": "valid_name",
             "email": "valid_email@email.com",
             "created_at": "valid_created_at",
         }
@@ -91,7 +91,7 @@ class TestSignUp(unittest.IsolatedAsyncioTestCase):
             response.body,
             {
                 "id": "valid_id",
-                "name": "valid_name",
+                "fullname": "valid_name",
                 "email": "valid_email@email.com",
                 "created_at": "valid_created_at",
             },

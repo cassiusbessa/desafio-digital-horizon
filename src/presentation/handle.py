@@ -10,12 +10,11 @@ app = Flask(__name__)
 @app.route("/user", methods=["POST"])
 def index():
     record = json.loads(request.data)
-    print(record)
     user = User(
-        record["id"],
-        record["fullname"],
-        record["email"],
-        record["password"],
+        id=record["id"],
+        fullname=record["fullname"],
+        email=record["email"],
+        password=record["password"],
     )
     return jsonify(user.toJSON())
 

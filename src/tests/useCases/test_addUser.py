@@ -11,7 +11,7 @@ class TestDbAddUser(unittest.IsolatedAsyncioTestCase):
 
     async def test_add_calls_addUserRepository_with_correct_params(self):
         user_data = {
-            "name": "any_name",
+            "fullname": "any_name",
             "email": "any_email",
             "password": "any_password",
         }
@@ -21,7 +21,7 @@ class TestDbAddUser(unittest.IsolatedAsyncioTestCase):
     async def test_add_returns_user_on_success(self):
         user_data = {
             "id": "any_id",
-            "name": "any_name",
+            "fullname": "any_name",
             "email": "any_email",
             "password": "any_password",
             "created_at": "any_created_at",

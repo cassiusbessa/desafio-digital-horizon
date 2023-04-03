@@ -4,7 +4,7 @@ from typing import TypedDict
 
 
 class AddUserModel(TypedDict):
-    name: str
+    fullname: str
     email: str
     password: str
 
