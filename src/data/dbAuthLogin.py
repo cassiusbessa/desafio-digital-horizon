@@ -12,4 +12,5 @@ class DbAddLogin(Authentication):
         self.tokenGenerator = tokenGenerator
 
     async def auth(self, loginData: LoginModel) -> LoginResponseModel:
-        await self.loadUser.load(loginData["email"])
+        user = await self.loadUser.load(loginData["email"])
+        await self.tokenGenerator.generateToken(user)

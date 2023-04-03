@@ -5,7 +5,7 @@ from domain.entities.user import User
 
 class TokenGenerator(ABC):
     @abstractmethod
-    def generateToken(self, data: User) -> str:
+    async def generateToken(self, data: User) -> str:
         pass
 
 
