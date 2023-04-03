@@ -87,6 +87,10 @@ class TestUserRepository(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(isinstance(result.createdAt, datetime))
         self.assertTrue(isinstance(result.id, int))
 
+    async def test_load_user_not_found(self):
+        result = await self.user_repository.load("invalid_email")
+        self.assertEqual(result, None)
+
 
 if __name__ == "__main__":
     unittest.main()
