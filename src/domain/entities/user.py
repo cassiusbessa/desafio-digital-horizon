@@ -16,7 +16,7 @@ class User:
             f"User: {self.id}, {self.fullname}, {self.email}, {self.createdAt}"
         )
 
-    def toJSON(self):
+    def toDict(self):
         return {
             "id": self.id,
             "fullname": self.fullname,
