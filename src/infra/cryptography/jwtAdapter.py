@@ -1,3 +1,4 @@
+import datetime
 import jwt
 
 from data.protocols.cryptographyProtocols import TokenGenerator
@@ -9,4 +10,7 @@ class JwtAdapter(TokenGenerator):
         self.secretKey = secretKey
 
     async def generateToken(self, payload: User) -> str:
+        payload.createdAt = datetime.datetime.strftime(
+            payload.createdAt, "%Y-%m-%d %H:%M:%S"
+        )
         return jwt.encode(payload.toDict(), self.secretKey, algorithm="HS256")
