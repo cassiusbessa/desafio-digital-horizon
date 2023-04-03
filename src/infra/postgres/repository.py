@@ -1,11 +1,14 @@
 from datetime import datetime
-from data.protocols.userDbProtocols import AddUserRepository
+from data.protocols.userDbProtocols import (
+    AddUserRepository,
+    LoadUserByEmailRepository,
+)
 
 from domain.entities.user import User
 from domain.usecases.addUser import AddUserModel
 
 
-class UserRepository(AddUserRepository):
+class UserRepository(AddUserRepository, LoadUserByEmailRepository):
     def __init__(self, conn):
         self.conn = conn
 
@@ -23,5 +26,14 @@ class UserRepository(AddUserRepository):
             )
             result = cur.fetchone()
             self.conn.commit()
+            user = User(*result)
+            return user
+
+    async def load(self, email: str) -> User:
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT * FROM users WHERE email = %s;", (email,))
+            result = cur.fetchone()
+            if result is None:
+                return None
             user = User(*result)
             return user
