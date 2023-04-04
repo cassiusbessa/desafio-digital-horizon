@@ -26,3 +26,10 @@ class TestListUsers(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 200)
         self.assertEqual(response.body, [user.toDict()])
+
+    async def test_handle_should_return_500_if_getAllUsers_raises(self):
+        request = HttpRequest()
+        self.getAllUsers.list.side_effect = Exception("Error message")
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 500)
+        self.assertEqual(response.body, {"error": "Internal server error"})
