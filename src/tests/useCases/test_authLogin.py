@@ -30,9 +30,16 @@ class TestAuthLogin(unittest.IsolatedAsyncioTestCase):
 
     async def test_should_call_tokenGenerator_with_correct_data(self):
         credentials = {
-            "email": "any_email@email.com",
-            "password": "any_password",
+            "email": "valid_email@email.com",
+            "password": "valid_password",
         }
+        self.loadUserByEmailRepository.load.return_value = User(
+            id="valid_id",
+            fullname="valid_name",
+            email="valid_email@email.com",
+            password="valid_password",
+            createdAt="valid_created_at",
+        )
         await self.sut.auth(credentials)
         self.tokenGenerator.generateToken.assert_called_with(
             await self.loadUserByEmailRepository.load(credentials["email"])
@@ -40,8 +47,8 @@ class TestAuthLogin(unittest.IsolatedAsyncioTestCase):
 
     async def test_should_return_login_response_model(self):
         credentials = {
-            "email": "any_email@email.com",
-            "password": "any_password",
+            "email": "valid_email@email.com",
+            "password": "valid_password",
         }
         self.loadUserByEmailRepository.load.return_value = User(
             id="valid_id",
