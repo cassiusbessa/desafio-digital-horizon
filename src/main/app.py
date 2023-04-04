@@ -33,6 +33,8 @@ async def login():
 async def listUsers():
     controller = makeListUsers()
     httpRequest = HttpRequest()
+    if request.headers.get("Authorization") is None:
+        return jsonify({"error": "missing authorization header"})
     httpRequest.headers = request.headers
     result = await controller.handle(httpRequest)
     return jsonify(result.body)
