@@ -17,7 +17,7 @@ class DbAddUser(AddUser):
 
     async def add(self, userData: AddUserModel) -> User:
         exists = await self.loadUserByEmailRepository.load(userData["email"])
-        if exists is None:
+        if exists is not None:
             return None
         user = await self.addUserRepository.add(userData)
         return user
