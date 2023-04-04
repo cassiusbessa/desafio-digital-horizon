@@ -16,3 +16,4 @@ class TokenMiddleware(Controller):
             return unauthorized(InvalidCredentialsError())
         if not self.tokenValidator.validate(auth):
             return unauthorized(InvalidCredentialsError())
+        return await self.controller.handle(httpRequest)
