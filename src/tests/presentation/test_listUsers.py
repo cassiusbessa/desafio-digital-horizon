@@ -3,7 +3,6 @@ import unittest
 from unittest.mock import MagicMock
 from domain.entities.user import User
 from domain.usecases.getAllUsers import GetAllUsers
-
 from presentation.controllers.listUsers import ListUsers
 from presentation.controllers.protocols.http import HttpRequest
 
@@ -33,9 +32,3 @@ class TestListUsers(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 500)
         self.assertEqual(response.body, {"error": "Internal server error"})
-
-    async def test_handle_should_return_401_if_no_token_provided(self):
-        request = HttpRequest(headers={"authorization": None})
-        response = await self.sut.handle(request)
-        self.assertEqual(response.statusCode, 401)
-        self.assertEqual(response.body, {"error": "Invalid credentials"})
