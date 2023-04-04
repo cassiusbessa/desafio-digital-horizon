@@ -11,5 +11,5 @@ class TokenGenerator(ABC):
 
 class TokenDecrypter(ABC):
     @abstractmethod
-    def decryptToken(self, token: str) -> User:
+    async def decryptToken(self, token: str) -> bool:
         pass
