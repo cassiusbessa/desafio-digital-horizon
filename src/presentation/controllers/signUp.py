@@ -26,7 +26,11 @@ class SignUp(Controller):
                 "password",
             ]
             for field in required_fields:
-                if field not in httpRequest.body:
+                print()
+                if (
+                    field not in httpRequest.body
+                    or not httpRequest.body[field]
+                ):
                     return badRequest(MissingParamError(field))
             user = await self.addUser.add(httpRequest.body)
             if user is None:
