@@ -21,13 +21,13 @@ class TestTokenMiddleware(unittest.IsolatedAsyncioTestCase):
 
     async def test_handle_should_return_401_if_token_is_invalid(self):
         request = HttpRequest(headers={"authorization": None})
-        self.tokenValidator.validate.return_value = False
+        self.tokenValidator.validateToken.return_value = False
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 401)
         self.assertEqual(response.body, {"error": "Invalid credentials"})
 
     async def test_handle_should_call_controller_with_correct_values(self):
         request = HttpRequest(headers={"authorization": "valid_token"})
-        self.tokenValidator.validate.return_value = True
+        self.tokenValidator.validateToken.return_value = True
         await self.sut.handle(request)
         self.Controller.handle.assert_called_with(request)
