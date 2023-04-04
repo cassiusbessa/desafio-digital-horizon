@@ -23,17 +23,17 @@ class TestDbAddUser(unittest.IsolatedAsyncioTestCase):
             "email": "any_email",
             "password": "any_password",
         }
+        self.loadUserByEmailRepository.load.return_value = None
         await self.sut.add(user_data)
         self.addUserRepository.add.assert_called_once_with(user_data)
 
     async def test_add_returns_user_on_success(self):
         user_data = {
-            "id": "any_id",
-            "fullname": "any_name",
-            "email": "any_email",
-            "password": "any_password",
-            "created_at": "any_created_at",
+            "fullname": "valid_name",
+            "email": "valid_email",
+            "password": "valid_password",
         }
+        self.loadUserByEmailRepository.load.return_value = None
         self.addUserRepository.add.return_value = user_data
         user = await self.sut.add(user_data)
         self.assertEqual(user, user_data)
