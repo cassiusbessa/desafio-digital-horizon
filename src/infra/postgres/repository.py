@@ -1,6 +1,8 @@
 from datetime import datetime
+from typing import List
 from data.protocols.userDbProtocols import (
     AddUserRepository,
+    GetAllUsersRepository,
     LoadUserByEmailRepository,
 )
 
@@ -8,7 +10,9 @@ from domain.entities.user import User
 from domain.usecases.addUser import AddUserModel
 
 
-class UserRepository(AddUserRepository, LoadUserByEmailRepository):
+class UserRepository(
+    AddUserRepository, LoadUserByEmailRepository, GetAllUsersRepository
+):
     def __init__(self, conn):
         self.conn = conn
 
@@ -37,3 +41,14 @@ class UserRepository(AddUserRepository, LoadUserByEmailRepository):
                 return None
             user = User(*result)
             return user
+
+    async def getAll(self) -> List[User]:
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT * FROM users;")
+            result = cur.fetchall()
+            if result is None:
+                return []
+            user_list = []
+            for user in result:
+                user_list.append(User(*user))
+            return user_list
