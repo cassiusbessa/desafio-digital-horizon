@@ -25,3 +25,9 @@ class TestTokenMiddleware(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 401)
         self.assertEqual(response.body, {"error": "Invalid credentials"})
+
+    async def test_handle_should_call_controller_with_correct_values(self):
+        request = HttpRequest(headers={"authorization": "valid_token"})
+        self.tokenValidator.validate.return_value = True
+        await self.sut.handle(request)
+        self.Controller.handle.assert_called_with(request)
