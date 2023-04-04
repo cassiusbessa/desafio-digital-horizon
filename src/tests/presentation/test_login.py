@@ -62,3 +62,12 @@ class TestLogin(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 201)
         self.assertEqual(response.body, self.authentication.auth.return_value)
+
+    async def test_handle_returns_403_if_authentication_fails(self):
+        request = HttpRequest(
+            body={"email": "invalid_email", "password": "invalid_password"}
+        )
+        self.authentication.auth.return_value = None
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 403)
+        self.assertEqual(response.body, {"error": "Invalid credentials"})
