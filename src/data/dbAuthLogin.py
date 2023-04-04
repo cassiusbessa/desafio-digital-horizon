@@ -15,6 +15,8 @@ class DbAddLogin(Authentication):
         user = await self.loadUser.load(loginData["email"])
         if user is None:
             return None
+        if user.password != loginData["password"]:
+            return None
         token = await self.tokenGenerator.generateToken(user)
         return {
             "token": token,
