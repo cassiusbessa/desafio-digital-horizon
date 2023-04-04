@@ -91,6 +91,34 @@ class TestUserRepository(unittest.IsolatedAsyncioTestCase):
         result = await self.user_repository.load("invalid_email")
         self.assertEqual(result, None)
 
+    async def test_get_all_users(self):
+        userModel: AddUserModel = {
+            "fullname": "valid_name",
+            "email": "valid_email",
+            "password": "valid_password",
+        }
+        self.cursor.execute(
+            "INSERT INTO users (fullname, email, password, created_at) "
+            "VALUES (%s, %s, %s, %s) RETURNING *;",
+            (
+                userModel["fullname"],
+                userModel["email"],
+                userModel["password"],
+                datetime.now(),
+            ),
+        )
+        self.cursor.fetchone()
+        self.conn.commit()
+
+        result = await self.user_repository.getAll()
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].fullname, userModel["fullname"])
+        self.assertEqual(result[0].email, userModel["email"])
+        self.assertEqual(result[0].password, userModel["password"])
+        self.assertTrue(isinstance(result[0].createdAt, datetime))
+        self.assertTrue(isinstance(result[0].id, int))
+
 
 if __name__ == "__main__":
     unittest.main()
