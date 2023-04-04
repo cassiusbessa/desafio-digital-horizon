@@ -1,5 +1,15 @@
+import datetime
+
+
 class User:
-    def __init__(self, id, fullname, email, password, createdAt):
+    def __init__(
+        self,
+        id: int,
+        fullname: str,
+        email: str,
+        password: str,
+        createdAt: datetime,
+    ):
         self.id = id
         self.fullname = fullname
         self.email = email
