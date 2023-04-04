@@ -74,3 +74,18 @@ class TestAuthLogin(unittest.IsolatedAsyncioTestCase):
         self.loadUserByEmailRepository.load.return_value = None
         login_response_model = await self.sut.auth(credentials)
         self.assertEqual(login_response_model, None)
+
+    async def test_should_return_none_if_password_is_invalid(self):
+        credentials = {
+            "email": "valid_email@email.com",
+            "password": "invalid_password",
+        }
+        self.loadUserByEmailRepository.load.return_value = User(
+            id="valid_id",
+            fullname="valid_name",
+            email="valid_email@email.com",
+            password="valid_password",
+            createdAt="valid_created_at",
+        )
+        login_response_model = await self.sut.auth(credentials)
+        self.assertEqual(login_response_model, None)
