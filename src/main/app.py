@@ -26,6 +26,3 @@ async def login():
     controller = makeLogin()
     result = await controller.handle(httprequest)
     return jsonify(result.body)
-
-
-app.run(host="0.0.0.0", port=3000)
