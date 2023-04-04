@@ -14,7 +14,7 @@ class TestListUsers(unittest.IsolatedAsyncioTestCase):
         self.sut = ListUsers(self.getAllUsers)
 
     async def test_handle_should_return_200_on_success(self):
-        request = HttpRequest()
+        request = HttpRequest(headers={"authorization": "valid_token"})
         user = User(
             id="valid_id",
             fullname="valid_name",
@@ -33,3 +33,9 @@ class TestListUsers(unittest.IsolatedAsyncioTestCase):
         response = await self.sut.handle(request)
         self.assertEqual(response.statusCode, 500)
         self.assertEqual(response.body, {"error": "Internal server error"})
+
+    async def test_handle_should_return_401_if_no_token_provided(self):
+        request = HttpRequest(headers={"authorization": None})
+        response = await self.sut.handle(request)
+        self.assertEqual(response.statusCode, 401)
+        self.assertEqual(response.body, {"error": "Invalid credentials"})
